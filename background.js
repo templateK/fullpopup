@@ -61,10 +61,11 @@ async function doNormalScreen(winId, tabId, tabLocation) {
     const moveProperties = { windowId : tabLocation.windowId, index: tabLocation.tabIndex };
     const movedTab = await chrome.tabs.move(tabId, moveProperties);
     
+    
     // finally make moved tab active
     const updateProperties = {active: true};
-    chrome.tabs.update(movedTab.id, updateProperties);
-
+    const updatedTab = await chrome.tabs.update(movedTab.id, updateProperties);
+    chrome.windows.remove(winId, () => console.log("removed: " + winId));
     // after all movement is completed, delete stored tab location
     tabLocations.delete(winId);
 
