@@ -8,7 +8,11 @@ function makeTabLocation (windowId, tab) {
     return 
 }
 
-async function onClick(info, tab) {
+function contextMenuHandler (info, tab) {
+    return toggleFullScreen(tab);
+}
+
+async function toggleFullScreen(tab) {
     try {
         const currentWindow = await chrome.windows.getCurrent();
         const winId = currentWindow.id;
@@ -23,7 +27,7 @@ async function onClick(info, tab) {
     } catch (error) {
         console.log(error);
     }
-};
+}
 
 function makeTabLocation(winId, tabIndex) {
     return { windowId : winId, tabIndex : tabIndex};
@@ -72,7 +76,24 @@ async function doNormalScreen(winId, tabId, tabLocation) {
     console.log("normal screen");
 }
 
+async function commandHandler (command) {
+    
+    if ( command === "toggle-fullscreen") {
+        const queryInfo = {active: true, currentWindow: true};
+        const tabs = await chrome.tabs.query(queryInfo);
+    
+        if ( tabs.length === 1) {
+            toggleFullScreen(tabs[0]);
+        } else {
+            console.log("No active tab in current window??!!");
+        }
+    }
+}
+
 const title = "전체 화면 토글"
-const createInfo = {"title": title, "contexts":["all"], "onclick": onClick};
+const createInfo = {"title": title, "contexts":["all"], "onclick": contextMenuHandler};
 chrome.contextMenus.create(createInfo);
+
 chrome.windows.onRemoved.addListener( winId => tabLocations.delete(winId) );
+chrome.commands.onCommand.addListener( commandHandler );
+chrome.browserAction.onClicked.addListener(toggleFullScreen);

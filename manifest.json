@@ -6,7 +6,8 @@
     "permissions": [
       "storage",
       "tabs",
-      "contextMenus"
+      "contextMenus",
+      "commands"
     ],
 
     "icons": {
@@ -30,6 +31,17 @@
     },
 
     "options_page" : "options.html",
+
+    "browser_action" : {},
+    
+    "commands" : {
+      "toggle-fullscreen" : {
+        "suggested_key" : {
+          "default" : "Alt+Z"
+        },
+        "description" : "Toggle current tab screen between full and normal mode"
+      }
+    },
 
     "manifest_version":2
 }
