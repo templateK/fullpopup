@@ -4,10 +4,6 @@
 
 var tabLocations = new Map();
 
-function makeTabLocation (windowId, tab) {
-    return 
-}
-
 function contextMenuHandler (info, tab) {
     return toggleFullScreen(tab);
 }
