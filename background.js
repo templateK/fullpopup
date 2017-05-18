@@ -75,3 +75,4 @@ async function doNormalScreen(winId, tabId, tabLocation) {
 const title = "전체 화면 토글"
 const createInfo = {"title": title, "contexts":["all"], "onclick": onClick};
 chrome.contextMenus.create(createInfo);
+chrome.windows.onRemoved.addListener( winId => tabLocations.delete(winId) );
