@@ -12,11 +12,18 @@ async function onClick(info, tab) {
     try {
         const currentWindow = await chrome.windows.getCurrent();
         const winId = currentWindow.id;
+        const isFullscreen = currentWindow.state === "fullscreen";
         
         if ( tabLocations.has(winId) ) {
-            doFullscreen(winId, tab.id);
+            if ( isFullscreen ) {
+                doNormalScreen(winId, tab.id);
+            } else {
+                // this window is already in normal mode, 
+                // but required to be in normal, so delete inconsistent information
+                tabLocations.delete(winId);
+            }
         } else {
-            doNormalScreen(winId, tab.id);
+            doFullscreen(winId, tab.id);
         } 
 
     } catch (error) {
@@ -28,7 +35,7 @@ function makeTabLocation(winId, tabIndex) {
     return { windowId : winId, tabIndex : tabIndex};
 }
 
-async function doNormalScreen(winId, tabId) {
+async function doFullScreen(winId, tabId) {
     
     // retreive current tab
     const currentTab = await chrome.tabs.get(tabId);
@@ -48,7 +55,7 @@ async function doNormalScreen(winId, tabId) {
     console.log("full screen");
 }
 
-async function doFullscreen(winId, tabId) {
+async function doNormalscreen(winId, tabId) {
     
     // make window of current tab normal because
     // chrome.tabs.move only works in normal window mode
