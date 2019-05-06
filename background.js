@@ -35,18 +35,18 @@ async function doFullScreen(winId, tabId) {
     const currentTab = await chrome.tabs.get(tabId);
 
     // make new window with current tab
-    const createData = {
-        tabId : currentTab.id,
-        type  : "normal",
-        state : "fullscreen"
-    };
-    const fullscreenWindow = await chrome.windows.create(createData);
+    const newWindow = await chrome.windows.create({ tabId: currentTab.id, type: "normal" });
 
     // store previous window,tabindex of tab of fullscreen window
     const tabLocation = makeTabLocation(winId, currentTab.index);
-    tabLocations.set( fullscreenWindow.id, tabLocation);
+    tabLocations.set( newWindow.id, tabLocation);
 
-    console.log("full screen");
+    console.log("created new window for the fullscreen", newWindow.id);
+
+    // update state of window to fullscreen
+    const fullscreenWindow = await chrome.windows.update(newWindow.id, { state: "fullscreen" });
+
+    console.log("update window state fullscreen completed: ", fullscreenWindow.id);
 }
 
 async function doNormalScreen(winId, tabId, tabLocation) {
